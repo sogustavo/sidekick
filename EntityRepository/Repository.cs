@@ -21,7 +21,6 @@ namespace GenericRepository
 
         public virtual T Entity(Expression<Func<T, bool>> predicate = null, params string[] includes)
         {
-
             IQueryable<T> query = _table.AsQueryable();
 
             if (includes != null)
