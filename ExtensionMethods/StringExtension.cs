@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.StaticFiles;
+using System;
 using System.IO;
+using System.Net.Mime;
 using System.Reflection;
 
 namespace ExtensionMethods
@@ -8,7 +10,7 @@ namespace ExtensionMethods
     {
         public static bool IsEmpty(this string text)
         {
-            if (string.IsNullOrEmpty(text) || string.IsNullOrWhiteSpace(text))
+            if (string.IsNullOrWhiteSpace(text))
             {
                 return true;
             }
@@ -202,9 +204,16 @@ namespace ExtensionMethods
             return new Uri(assembly.CodeBase).LocalPath;
         }
 
-        public static string Extension(this string text)
+        public static string Extension(this string filename)
         {
-            return Path.GetExtension(text);
+            return Path.GetExtension(filename);
+        }
+
+        public static string MimeType(this string filename)
+        {
+            new FileExtensionContentTypeProvider().TryGetContentType(filename, out string contentType);
+            
+            return contentType ?? MediaTypeNames.Application.Octet;
         }
     }
 }
