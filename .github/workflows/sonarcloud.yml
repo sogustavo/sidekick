@@ -25,5 +25,4 @@ jobs:
           args:
             -Dsonar.projectKey=sogustavo_sidekick
             -Dsonar.organization=sogustavo
-            -Dsonar.sources=./ExtensionMethods,./EntityRepository
             -Dsonar.verbose=true
