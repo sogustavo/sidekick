@@ -1,0 +1,55 @@
+name: .NET Build and SonarCloud scan
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+    types: [ "opened", "synchronize", "reopened", "ready_for_review" ]
+    paths:
+      - "EntityRepository/**/*"
+      - "ExtensionMethods/**/*"
+      - "test/**/*"
+      - "Sidekick.sln"
+      - "global.json"
+  workflow_dispatch:
+
+concurrency: 
+  group: ${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+permissions:
+  pull-requests: read
+
+jobs:
+  build-scan:
+    name: .NET Build and SonarCloud scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+       - uses: actions/checkout@v3
+         with:
+          fetch-depth: 0
+
+       - uses: actions/setup-dotnet@v3
+         with:
+          global-json-file: global.json
+
+       - name: Cache SonarCloud packages
+         uses: actions/cache@v3
+         with:
+          path: ~\sonar\cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+
+       - name: Run dotnet restore
+         run: dotnet restore Sidekick.sln
+
+       - name: Begin sonar scan
+         run: dotnet sonarscanner begin /k:"sogustavo_sidekick" /o:"sogustavo" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml
+
+       - name: Run dotnet build
+         run: dotnet build -c Release --no-restore Sidekick.sln
+         
+       - name: End sonar scan
+         run: dotnet sonarscanner end /d:sonar.login=${{ secrets.SONAR_TOKEN }}
