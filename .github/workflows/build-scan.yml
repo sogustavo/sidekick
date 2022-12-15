@@ -23,7 +23,7 @@ permissions:
 
 jobs:
   build-scan:
-    name: .NET Build and SonarCloud scan
+    name: Build and scan
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -41,6 +41,9 @@ jobs:
           path: ~\sonar\cache
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
+          
+       - name: Run dotnet tool restore
+         run: dotnet tool restore
 
        - name: Run dotnet restore
          run: dotnet restore Sidekick.sln
