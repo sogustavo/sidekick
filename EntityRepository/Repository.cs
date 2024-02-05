@@ -8,24 +8,17 @@ using System.Threading.Tasks;
 
 namespace GenericRepository
 {
-    public class Repository<T> : IRepository<T> where T : class
+    public class Repository<T>(DbContext context) : IRepository<T> where T : class
     {
-        public readonly DbContext Context;
+        public readonly DbContext Context = context;
 
-        private readonly DbSet<T> _table;
-
-        public Repository(DbContext context)
-        {
-            Context = context;
-
-            _table = context.Set<T>();
-        }
+        private readonly DbSet<T> _table = context.Set<T>();
 
         public virtual T Entity(Expression<Func<T, bool>> predicate = null, params string[] includes)
         {
             IQueryable<T> query = Queryable(includes);
 
-            if (predicate != null)
+            if (predicate is not null)
             {
                 return query.FirstOrDefault(predicate);
             }
@@ -37,7 +30,7 @@ namespace GenericRepository
         {
             IQueryable<T> query = Queryable(includes);
 
-            if (predicate != null)
+            if (predicate is not null)
             {
                 return await query.FirstOrDefaultAsync(predicate);
             }
@@ -45,11 +38,11 @@ namespace GenericRepository
             return await query.FirstOrDefaultAsync();
         }
 
-        public virtual List<T> Entities(Expression<Func<T, bool>> predicate = null, params string[] includes)
+        public virtual IEnumerable<T> Entities(Expression<Func<T, bool>> predicate = null, params string[] includes)
         {
             IQueryable<T> query = Queryable(includes);
 
-            if (predicate != null)
+            if (predicate is not null)
             {
                 return query.Where(predicate).ToList();
             }
@@ -57,23 +50,23 @@ namespace GenericRepository
             return query.ToList();
         }
 
-        public virtual async Task<List<T>> EntitiesAsync(Expression<Func<T, bool>> predicate = null, params string[] includes)
+        public virtual Task<List<T>> EntitiesAsync(Expression<Func<T, bool>> predicate = null, params string[] includes)
         {
             IQueryable<T> query = Queryable(includes);
 
-            if (predicate != null)
+            if (predicate is not null)
             {
-                return query.Where(predicate).ToList();
+                return query.Where(predicate).ToListAsync();
             }
 
-            return await query.ToListAsync();
+            return query.ToListAsync();
         }
 
         public virtual int Count(Expression<Func<T, bool>> predicate = null, params string[] includes)
         {
             IQueryable<T> query = Queryable(includes);
 
-            if (predicate != null)
+            if (predicate is not null)
             {
                 return query.Count(predicate);
             }
@@ -81,16 +74,16 @@ namespace GenericRepository
             return query.Count();
         }
 
-        public virtual async Task<int> CountAsync(Expression<Func<T, bool>> predicate = null, params string[] includes)
+        public virtual Task<int> CountAsync(Expression<Func<T, bool>> predicate = null, params string[] includes)
         {
             IQueryable<T> query = Queryable(includes);
 
-            if (predicate != null)
+            if (predicate is not null)
             {
-                return await query.CountAsync(predicate);
+                return query.CountAsync(predicate);
             }
 
-            return await query.CountAsync();
+            return query.CountAsync();
         }
 
         public virtual decimal Sum(Expression<Func<T, decimal>> selector, params string[] includes)
@@ -100,11 +93,11 @@ namespace GenericRepository
             return query.Sum(selector);
         }
 
-        public virtual async Task<decimal> SumAsync(Expression<Func<T, decimal>> selector = null, params string[] includes)
+        public virtual Task<decimal> SumAsync(Expression<Func<T, decimal>> selector = null, params string[] includes)
         {
             IQueryable<T> query = Queryable(includes);
 
-            return await query.SumAsync(selector);
+            return query.SumAsync(selector);
         }
 
         public virtual bool Add(T entity)
@@ -183,7 +176,7 @@ namespace GenericRepository
         {
             IQueryable<T> query = _table.AsQueryable();
 
-            if (includes != null)
+            if (includes is not null)
             {
                 for (int i = 0; i < includes.Length; i++)
                 {

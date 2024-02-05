@@ -14,7 +14,7 @@ namespace GenericRepository
 
         Task<T> EntityAsync(Expression<Func<T, bool>> predicate = null, params string[] includes);
 
-        List<T> Entities(Expression<Func<T, bool>> predicate = null, params string[] includes);
+        IEnumerable<T> Entities(Expression<Func<T, bool>> predicate = null, params string[] includes);
 
         Task<List<T>> EntitiesAsync(Expression<Func<T, bool>> predicate = null, params string[] includes);
 
