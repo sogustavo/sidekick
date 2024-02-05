@@ -15,7 +15,7 @@ namespace ExtensionMethods
             }
             catch (Exception)
             {
-                return enumeration.ToString();
+                return nameof(enumeration);
             }
         }
     }

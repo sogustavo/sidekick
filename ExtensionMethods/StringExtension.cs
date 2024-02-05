@@ -42,26 +42,24 @@ namespace ExtensionMethods
                 return false;
             }
 
-            int[] multiplier1 = new int[12] { 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2 };
+            int[] multiplier1 = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
 
-            int[] multiplier2 = new int[13] { 6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2 };
-
-            int sum = 0, rest;
-
-            string digit, CNPJ;
+            int[] multiplier2 = [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
 
             text = text.Trim();
 
             text = text.Remove(".", "-", "/");
 
-            CNPJ = text.Substring(0, 12);
+            var cnpj = text[..12];
+
+            var sum = 0;
 
             for (int i = 0; i < 12; i++)
             {
-                sum += int.Parse(CNPJ[i].ToString()) * multiplier1[i];
+                sum += int.Parse(cnpj[i].ToString()) * multiplier1[i];
             }
 
-            rest = sum % 11;
+            var rest = sum % 11;
 
             if (rest < 2)
             {
@@ -72,15 +70,15 @@ namespace ExtensionMethods
                 rest = 11 - rest;
             }
 
-            digit = rest.ToString();
+            var digit = rest.ToString();
 
-            CNPJ = CNPJ + digit;
+            cnpj += digit;
 
             sum = 0;
 
             for (int i = 0; i < 13; i++)
             {
-                sum += int.Parse(CNPJ[i].ToString()) * multiplier2[i];
+                sum += int.Parse(cnpj[i].ToString()) * multiplier2[i];
             }
 
             rest = (sum % 11);
@@ -94,7 +92,7 @@ namespace ExtensionMethods
                 rest = 11 - rest;
             }
 
-            digit = digit + rest.ToString();
+            digit += rest.ToString();
 
             return text.EndsWith(digit);
         }
@@ -106,26 +104,24 @@ namespace ExtensionMethods
                 return false;
             }
 
-            int[] multiplier1 = new int[9] { 10, 9, 8, 7, 6, 5, 4, 3, 2 };
+            int[] multiplier1 = [10, 9, 8, 7, 6, 5, 4, 3, 2];
 
-            int[] multiplier2 = new int[10] { 11, 10, 9, 8, 7, 6, 5, 4, 3, 2 };
-
-            string CPF, digit;
-
-            int sum = 0, rest;
+            int[] multiplier2 = [11, 10, 9, 8, 7, 6, 5, 4, 3, 2];
 
             text = text.Trim();
 
             text = text.Remove(".", "-");
 
-            CPF = text.Substring(0, 9);
+            var cpf = text[..9];
+
+            var sum = 0;
 
             for (int i = 0; i < 9; i++)
             {
-                sum += int.Parse(CPF[i].ToString()) * multiplier1[i];
+                sum += int.Parse(cpf[i].ToString()) * multiplier1[i];
             }
 
-            rest = sum % 11;
+            var rest = sum % 11;
 
             if (rest < 2)
             {
@@ -136,15 +132,15 @@ namespace ExtensionMethods
                 rest = 11 - rest;
             }
 
-            digit = rest.ToString();
+            var digit = rest.ToString();
 
-            CPF = CPF + digit;
+            cpf += digit;
 
             sum = 0;
 
             for (int i = 0; i < 10; i++)
             {
-                sum += int.Parse(CPF[i].ToString()) * multiplier2[i];
+                sum += int.Parse(cpf[i].ToString()) * multiplier2[i];
             }
 
             rest = sum % 11;
@@ -158,7 +154,7 @@ namespace ExtensionMethods
                 rest = 11 - rest;
             }
 
-            digit = digit + rest.ToString();
+            digit += rest.ToString();
 
             return text.EndsWith(digit);
         }
@@ -170,22 +166,20 @@ namespace ExtensionMethods
                 return false;
             }
 
-            int[] multiplier = new int[10] { 3, 2, 9, 8, 7, 6, 5, 4, 3, 2 };
-
-            int sum = 0, rest;
+            int[] multiplier = [3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
 
             text = text.Trim();
 
             text = text.Remove("-", ".").PadLeft(11, '0');
 
-            sum = 0;
+            var sum = 0;
 
             for (int i = 0; i < 10; i++)
             {
                 sum += int.Parse(text[i].ToString()) * multiplier[i];
             }
 
-            rest = sum % 11;
+            var rest = sum % 11;
 
             if (rest < 2)
             {
@@ -201,7 +195,7 @@ namespace ExtensionMethods
 
         public static string AssemblyPath(this Assembly assembly)
         {
-            return new Uri(assembly.CodeBase).LocalPath;
+            return new Uri(assembly.Location).LocalPath;
         }
 
         public static string Extension(this string filename)

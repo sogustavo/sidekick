@@ -7,7 +7,7 @@ namespace ExtensionMethods
     {
         public static T? TryParse<T>(this object obj) where T : struct
         {
-            if (obj == null)
+            if (obj is null)
             {
                 return null;
             }
@@ -16,11 +16,11 @@ namespace ExtensionMethods
 
             TypeConverter tc = TypeDescriptor.GetConverter(typeof(T));
 
-            if (tc != null)
+            if (tc is not null)
             {
                 try
                 {
-                    string value = obj.ToString();
+                    var value = obj.ToString();
 
                     result = (T)tc.ConvertFromString(value);
                 }
